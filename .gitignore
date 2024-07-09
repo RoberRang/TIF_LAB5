@@ -1,4 +1,3 @@
 
 *.class
 /target/
-src/hibernate.cfg.xml
