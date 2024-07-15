@@ -19,7 +19,8 @@
         <mapping class="entidad.Paciente"/>
         <mapping class="entidad.Turno"/>
         <mapping class="entidad.Usuario"/>
-        <mapping class="entidad.Nacionalidad"/>
         <mapping class="entidad.Jornada"/>
+        <mapping class="entidad.Provincia"/>
+        <mapping class="entidad.Localidad"/>
     </session-factory>
 </hibernate-configuration>
