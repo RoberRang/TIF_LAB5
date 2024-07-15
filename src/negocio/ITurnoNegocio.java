@@ -28,4 +28,9 @@ public interface ITurnoNegocio {
 	public double obtenerPorcentajeTurnos(EstadoTurno estado, String fechaInicio, String fechaFin);
 	
 	public long obtenerTotalTurnos(String fechaInicio, String fechaFin);
+	
+	public List<Turno> listadoTurnosPorFecha(String fechaInicio, String fechaFin);
+	
+	public Turno turnoPorId(Long id);
+
 }

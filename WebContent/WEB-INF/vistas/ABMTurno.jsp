@@ -4,6 +4,7 @@
 <%@ page import="entidad.Usuario"%>
 <%@ page import="entidad.PerfilUsuario"%>
 <%@ page import="entidad.Turno"%>
+<%@ page import="entidad.EstadoTurno"%>
 <%@ page import="java.time.LocalDate"%>
 <!DOCTYPE html>
 <html>
@@ -20,9 +21,10 @@
 <body>
 	<%
 		Usuario usuario = (Usuario) session.getAttribute("user");
-		if (request.getSession().getAttribute("user") != null
-				&& usuario.getPerfil() != PerfilUsuario.MEDICO.getPerfilUsuario()) {
+
+		if (request.getSession().getAttribute("user") != null) {
 	%>
+
 	<%@include file="Menu.jsp"%>
 
 	<h2 class="title">Alta y Modificacion de Turnos</h2>
@@ -37,16 +39,25 @@
 			<table>
 				<!-- Buscar paciente por DNI -->
 				<tr>
-					<td><label>DNI Paciente</label></td>
-					<td><input type="text" name="dni" value="${paciente.dni}" required></td>
-					<td>
-						<button type="submit" formaction="buscarPacientePorDni.do"
-							class="btn btn-outline-success">Buscar DNI</button>
-					</td>
-				</tr>
+					<c:if test="${editar}">
 
-				<!-- Luego de buscar cargar nombre y apellido y el desplegable de espacialidad y medicos -->
-				<c:if test="${mostrarCampos}">
+					</c:if>
+
+
+
+
+					<c:if test="${!editar}">
+						<!-- Luego de buscar cargar nombre y apellido y el desplegable de espacialidad y medicos -->
+						<c:if test="${mostrarCampos}">
+							<td><label>DNI Paciente</label></td>
+							<td><input type="text" name="dni" value="${paciente.dni}"
+								required></td>
+
+							<td>
+								<button type="submit" formaction="buscarPacientePorDni.do"
+									class="btn btn-outline-success">Buscar DNI</button>
+							</td>
+				</tr>
 				<tr>
 					<td><label>Nombre</label></td>
 					<td><input type="text" name="txtNombrePaciente"
@@ -120,11 +131,21 @@
 					</select></td>
 				</tr>
 				<tr>
+					<td><label>Estado</label></td>
+					<td><select name="selEstado">
+							<c:forEach items="${EstadoTurno.values()}" var="estado"
+								varStatus="loop">
+								<option value="${estado}" ${loop.index == 0 ? 'selected' : ''}
+									${loop.index != 0 ? 'disabled' : ''}>
+									${estado.getEstado()}</option>
+							</c:forEach>
+					</select></td>
+				</tr>
+				<tr>
 					<td><label>Observaciones</label></td>
 					<td><textarea name="txtObservacion" style="width: 233px;"
 							maxlength="1000"></textarea></td>
 				</tr>
-				
 			</table>
 			<div class="button-container">
 				<button type="submit"
@@ -135,6 +156,105 @@
 					class="btn btn-outline-primary btn-spaced" name="btnActualizar">Actualizar</button>
 			</div>
 		</div>
+		</c:if>
+		</c:if>
+
+
+		<c:if test="${editar}">
+			<!-- Luego de buscar cargar nombre y apellido y el desplegable de espacialidad y medicos -->
+			<c:if test="${mostrarCampos}">
+				<td><label>DNI Paciente</label></td>
+				<td><input type="text" name="dni" value="${turno.paciente.dni}"
+					required readonly style="background-color: #f2f2f2;"></td>
+				<tr>
+					<td><label>Nombre</label></td>
+					<td><input type="text" name="txtNombrePaciente"
+						id="nombrePaciente" value="${turno.paciente.nombre}" readonly
+						style="background-color: #eee;"></td>
+				</tr>
+				<tr>
+					<td><label>Apellido</label></td>
+					<td><input type="text" name="txtApellidoPaciente"
+						id="apellidoPaciente" value="${turno.paciente.apellido}" readonly
+						style="background-color: #eee;"></td>
+				</tr>
+
+				<c:if test="${not hayTurno}">
+					<tr>
+						<td><label for="txtMedico">Médico</label></td>
+						<td><input type="text" name="txtMedico" id="txtMedico"
+							value="${turno.medico.apellido}" readonly
+							style="width: 150px; background-color: #eee; padding: 5px;">
+
+						</td>
+					</tr>
+					<tr>
+
+						<td><label for="txtEspecialidad">Especialidad</label></td>
+						<td><input type="text" name="txtEspecialidad"
+							id="txtEspecialidad" value="${turno.medico.especialidad.nombre}"
+							readonly
+							style="width: 150px; background-color: #eee; padding: 5px;">
+						</td>
+
+					</tr>
+
+				</c:if>
+				<c:if test="${hayTurno}">
+					<tr>
+						<td><input name="legajo" type="hidden"
+							value="${turno.medico.legajo}" readonly></td>
+					</tr>
+					<tr>
+						<td><label>Medico</label></td>
+						<td><input type="text" name="txtMedico" id="txtMedico"
+							value="${turno.medico.apellido}" readonly
+							style="background-color: #eee;"></td>
+					</tr>
+				</c:if>
+				<c:if test="${not empty cantTurnos}">
+					<tr>
+						<td colspan="3"><label class="error" id="errorLabel">${cantTurnos}</label></td>
+					</tr>
+				</c:if>
+				<tr>
+					<td><label>Fecha de Reserva</label></td>
+					<td><input type="text" name="txtFechaReserva"
+						style="width: 233px; padding: 5px; background-color: #f2f2f2; color: #888;"
+						value="${turno.fecha}" required readonly></td>
+				</tr>
+				<tr>
+					<td><label for="txtHora">Hora</label></td>
+					<td><input type="text" name="txtHora" id="txtHora"
+						value="${turno.hora}" required readonly
+						style="width: 100px; padding: 5px; background-color: #f2f2f2; color: #888;">
+					</td>
+				</tr>
+				<tr>
+					<td><label>Estado</label></td>
+					<td><select name="selEstado">
+							<c:forEach items="${EstadoTurno.values()}" var="estado"
+								varStatus="loop">
+								<option value="${estado}"
+									${estado == EstadoTurno.PENDIENTE ? 'disabled' : ''}
+									${loop.index == 0 ? 'selected' : ''}>
+									${estado.getEstado()}</option>
+							</c:forEach>
+					</select></td>
+				</tr>
+				<tr>
+					<td><label>Observaciones</label></td>
+					<td><textarea name="txtObservacion" style="width: 233px;"
+							maxlength="1000"></textarea></td>
+				</tr>
+				</table>
+				<div class="button-container">
+					<button type="submit"
+						onclick="return confirm('¿Confirma que desea guardar este turno?')"
+						class="btn btn-outline-primary btn-spaced" name="btnActualizar">Actualizar</button>
+				</div>
+				</div>
+			</c:if>
 		</c:if>
 	</form>
 
@@ -165,6 +285,7 @@
 	<%
 		} else {
 			response.sendRedirect("Access.do");
+
 		}
 	%>
 </body>

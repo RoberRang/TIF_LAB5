@@ -30,6 +30,11 @@
 
 		<div class="formulario">
 			<div>
+			<div>
+				<c:if test="${error}">
+					<label class="error" id="errorLabel"> El Dni ingresado ya existe en la base datos.</label>
+				</c:if>
+			</div>
 				<table>
 					<tr>
 						<c:if test="${editar}">
@@ -59,6 +64,17 @@
 						<td><input type="text" name="apellido" id="apellido"
 							pattern="[a-z A-Z]+" value="${paciente.apellido}" required></td>
 					</tr>
+					<tr>
+						<td><label>Sexo</label></td>
+						<td><select name="sexo" style="width: 233px;">
+								<c:if test="${editar}">
+									<option value="${paciente.sexo}">${paciente.sexo}</option>
+								</c:if>
+								<option value="X">X</option>
+								<option value="F">Femenino</option>
+								<option value="M">Masculino</option>
+						</select></td>
+					</tr>
 					<c:if test="${editar}">
 						<tr>
 							<td><label>Fecha Nacimiento</label></td>
@@ -73,7 +89,7 @@
 							<td><label>Fecha Nacimiento</label></td>
 							<td><input type="date" name="fechaNacimiento"
 								max="<%= LocalDate.now().toString() %>"
-								value="${paciente.fechaNacimiento}" required
+								value="${fecNacPac}" required
 								style="width: 233px;"></td>
 						</tr>
 					</c:if>
@@ -89,6 +105,9 @@
 								<c:if test="${editar}">
 									<option value="${paciente.provincia.id}">${paciente.provincia.nombre}</option>
 								</c:if>
+								<c:if test="${error}">
+									<option value="${paciente.provincia.id}">${paciente.provincia.nombre}</option>
+								</c:if>
 								<option value="">Seleccione una Provincia</option>
 								<c:forEach items="${provincias}" var="provincia">
 									<option value="${provincia.id}">${provincia.nombre}</option>
@@ -102,6 +121,9 @@
 							style="width: 233px;">
 
 								<c:if test="${editar}">
+									<option value="${paciente.localidad.id}">${paciente.localidad.nombre}</option>
+								</c:if>
+								<c:if test="${error}">
 									<option value="${paciente.localidad.id}">${paciente.localidad.nombre}</option>
 								</c:if>
 								<option value="">Seleccione una Localidad</option>

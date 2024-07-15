@@ -86,24 +86,20 @@
 			<c:forEach items="${turnos}" var="turno">
 				<tr>
 					<td>${turno.id}</td>
-					<td>${turno.paciente.nombre}${turno.paciente.apellido}</td>
-					<td>${turno.medico.nombre}${turno.medico.apellido}</td>
+					<td>${turno.paciente.nombre} ${turno.paciente.apellido}</td>
+					<td>${turno.medico.nombre} ${turno.medico.apellido}</td>
 					<td>${turno.medico.especialidad.nombre}</td>
 					<td>${turno.fecha}</td>
 					<td>${turno.hora}hs</td>
 					<td>${turno.estado}</td>
 					<td>
-						<form action="editarTurno.do" method="get">
+						<form action="EditarTurno.do" method="get">
 							<input type="hidden" name="id" value="${turno.id}">
-							<%
-								if (usuario.getPerfil() != PerfilUsuario.MEDICO.getPerfilUsuario()) {
-							%>
+
 							<button type="submit">
 								<i class="fa fa-edit"></i>
 							</button>
-							<%
-								}
-							%>
+
 						</form>
 					</td>
 					<td>

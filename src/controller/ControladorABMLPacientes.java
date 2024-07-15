@@ -40,7 +40,9 @@ public class ControladorABMLPacientes {
 		Provincia provincia= provinciaNg.getProvinciaById(selProvincia);
 		
 		
-		if (btnGrabar != null && btnGrabar.equals("Grabar")) {
+		if (btnGrabar != null && btnGrabar.equals("Grabar")) {		
+			
+			if(pacienteNg.obtenerPacientePorDNI(paciente.getDni())==null) {
 			paciente.setActivo(true);
 			paciente.setProvincia(provincia);
 			paciente.setLocalidad(localidad);
@@ -49,13 +51,23 @@ public class ControladorABMLPacientes {
 			List<Paciente> pacientes = pacienteNg.ReadAll();
 			MV.addObject("pacientes", pacientes);
 			MV.setViewName("ListarPacientes");
+			}else {
+				MV.addObject("error", true);
+				List<Provincia> provincias = provinciaNg.ReadAll();
+				List<Localidad> localidades = localidadNg.ReadAll();
+				paciente.setProvincia(provincia);
+				paciente.setLocalidad(localidad);
+				MV.addObject("provincias", provincias);
+				MV.addObject("localidades", localidades);
+			}
+			
 		}
 		else if (btnActualizar != null && btnActualizar.equals("Actualizar")) {			
 			paciente.setActivo(true);
 			paciente.setProvincia(provincia);
 			paciente.setLocalidad(localidad);
-			boolean confirmacion = pacienteNg.Update(paciente);
-			MV.addObject("confirmacion", confirmacion);
+			boolean modificacion = pacienteNg.Update(paciente);
+			MV.addObject("modificacion", modificacion);
 			List<Paciente> pacientes = pacienteNg.ReadAll();
 			MV.addObject("pacientes", pacientes);
 			MV.setViewName("ListarPacientes");			
